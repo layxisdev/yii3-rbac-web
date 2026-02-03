@@ -12,6 +12,9 @@ use Layxis\Yii\Rbac\Web\Role\CreateAction as RoleCreate;
 use Layxis\Yii\Rbac\Web\Role\UpdateAction as RoleUpdate;
 use Layxis\Yii\Rbac\Web\Role\DeleteAction as RoleDelete;
 use Layxis\Yii\Rbac\Web\Role\ViewAction as RoleView;
+use Layxis\Yii\Rbac\Web\Assignment\IndexAction as AssignmentIndex;
+use Layxis\Yii\Rbac\Web\Assignment\AssignAction as AssignmentAssign;
+use Layxis\Yii\Rbac\Web\Assignment\RevokeAction as AssignmentRevoke;
 use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
 
@@ -22,7 +25,6 @@ return [
             ->namePrefix('role/')
             ->routes(
                 Route::get('/roles')->action(RoleIndex::class)->name('index'),
-                Route::get('/roles/{name}')->action(RoleIndex::class)->name('name'),
                 Route::methods(['GET', 'POST'], '/role/create')->action(RoleCreate::class)->name('create'),
                 Route::methods(['GET', 'POST'], '/role/update/{name}')->action(RoleUpdate::class)->name('update'),
                 Route::post('/role/delete/{name}')->action(RoleDelete::class)->name('delete'),
@@ -33,11 +35,18 @@ return [
             ->namePrefix('permission/')
             ->routes(
                 Route::get('/permissions')->action(PermissionIndex::class)->name('index'),
-                Route::get('/permissions/{name}')->action(PermissionIndex::class)->name('name'),
                 Route::methods(['GET', 'POST'], '/permission/create')->action(PermissionCreate::class)->name('create'),
                 Route::methods(['GET', 'POST'], '/permission/update/{name}')->action(PermissionUpdate::class)->name('update'),
                 Route::post('/permission/delete/{name}')->action(PermissionDelete::class)->name('delete'),
                 Route::get('/permission/{name}')->action(PermissionView::class)->name('view'),
+            ),
+    
+        Group::create()
+            ->namePrefix('assignment/')
+            ->routes(
+                Route::get('/assignments')->action(AssignmentIndex::class)->name('index'),
+                Route::methods(['GET', 'POST'], '/assignment/assign')->action(AssignmentAssign::class)->name('assign'),
+                Route::post('/assignment/revoke')->action(AssignmentRevoke::class)->name('revoke'),
             ),
     ],
 ];
