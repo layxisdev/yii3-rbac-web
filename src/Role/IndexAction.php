@@ -21,7 +21,7 @@ final class IndexAction
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $roles = $this->itemsStorage->getRoles();
-        
+
         return $this->viewRenderer->render('index', ['roles' => $roles]);
     }
 }

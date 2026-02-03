@@ -30,8 +30,8 @@ final class CreateAction
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $form = new PermissionForm();
-        $this->formHydrator->populateFromPostAndValidate($form, $request);
-        if ($form->isValid()) {
+        
+        if ($this->formHydrator->populateFromPostAndValidate($form, $request)) {
             $permission = (new Permission($form->getName()))
                 ->withDescription($form->getDescription())
                 ->withRuleName($form->getRuleName());

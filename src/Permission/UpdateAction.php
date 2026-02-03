@@ -29,10 +29,12 @@ final class UpdateAction
 
     public function __invoke(ServerRequestInterface $request, #[RouteArgument('name')] string $name): ResponseInterface
     {
-        $form = new PermissionForm();
         $permission = $this->manager->getPermission($name);
-        $this->formHydrator->populateFromPostAndValidate($form, $request);
-        if ($form->isValid()) {
+        if ($permission === null) {
+            return $this->responseFactory->createResponse(Status::NOT_FOUND);
+        }
+        $form = new PermissionForm();
+        if ($this->formHydrator->populateFromPostAndValidate($form, $request)) {    
             $permission = $permission->withName($form->getName())
                 ->withDescription($form->getDescription())
                 ->withRuleName($form->getRuleName());
@@ -43,6 +45,9 @@ final class UpdateAction
                 ->createResponse(Status::FOUND)
                 ->withHeader('Location', $this->urlGenerator->generate('permission/index'));
         }
+        $form->setName($permission->getName());
+        $form->setDescription($permission->getDescription());
+        $form->setRuleName($permission->getRuleName());
 
         return $this->viewRenderer->render('update', ['form' => $form]);
     }

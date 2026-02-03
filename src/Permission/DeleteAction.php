@@ -14,8 +14,9 @@ use Yiisoft\Yii\View\Renderer\ViewRenderer;
 use Layxis\Yii\Rbac\Web\Permission\PermissionForm;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\FormModel\FormHydrator;
+use Yiisoft\Router\HydratorAttribute\RouteArgument;
 
-final class DeleteAction implements RequestHandlerInterface
+final class DeleteAction
 {
     public function __construct(
         private ViewRenderer $viewRenderer,
@@ -27,11 +28,13 @@ final class DeleteAction implements RequestHandlerInterface
         $this->viewRenderer = $viewRenderer->withControllerName('permission');
     }
 
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, #[RouteArgument('name')] string $name): ResponseInterface
     {
-        $form = new PermissionForm();
-        $this->formHydrator->populateFromPostAndValidate($form, $request);
-        $this->manager->removePermission($form->getName());
+        if($this->manager->getPermission($name) === null) {
+            return $this->responseFactory->createResponse(Status::NOT_FOUND);
+        }
+        $this->manager->removePermission($name);
+
         return $this->responseFactory
             ->createResponse(Status::FOUND)
             ->withHeader('Location', $this->urlGenerator->generate('permission/index'));

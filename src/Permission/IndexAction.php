@@ -16,14 +16,15 @@ final class IndexAction
         private ItemsStorageInterface $itemsStorage,
         private ViewRenderer $viewRenderer,
     ) {
+        $this->viewRenderer = $viewRenderer->withControllerName('permission');
     }
 
-    public function __invoke(ServerRequestInterface $request, #[RouteArgument('name')] ?string $name = null): ResponseInterface
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        $permission = $name !== null ? $this->itemsStorage->getPermissionsByNames((array)$name) : $this->itemsStorage->getPermissions();
-        $this->viewRenderer->withViewPath('./views');
+        $permission =  $this->itemsStorage->getPermissions();
+
         return $this->viewRenderer->render(
-            view: 'permission/index',
+            view: 'index',
             parameters: [
                 'permissions' => $permission,
             ],

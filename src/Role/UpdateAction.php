@@ -11,7 +11,7 @@ use Yiisoft\Rbac\ManagerInterface;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Yii\View\Renderer\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Yiisoft\Form\FormHydrator;
+use Yiisoft\FormModel\FormHydrator;
 use Yiisoft\Router\HydratorAttribute\RouteArgument;
 use Yiisoft\Validator\ValidatorInterface;
 
@@ -36,25 +36,23 @@ final class UpdateAction
         }
 
         $form = new RoleForm();
-        if ($request->getMethod() === 'POST' && $this->formHydrator->populate($form, $request->getParsedBody())) {
-            $this->validator->validate($form);
-            if ($form->isValid()) {
+        
+        if ($this->formHydrator->populateFromPostAndValidate($form, $request)) {
                 $newRole = $role
                     ->withName($form->getName())
                     ->withDescription($form->getDescription())
                     ->withRuleName($form->getRuleName());
 
-                $this->manager->update($name, $newRole);
+                $this->manager->updateRole($name, $newRole);
 
                 return $this->responseFactory
                     ->createResponse(Status::FOUND)
                     ->withHeader('Location', $this->urlGenerator->generate('role/index'));
-            }
-        } else {
-            $form->setName($role->getName());
-            $form->setDescription($role->getDescription());
-            $form->setRuleName($role->getRuleName());
         }
+
+        $form->setName($role->getName());
+        $form->setDescription($role->getDescription());
+        $form->setRuleName($role->getRuleName());
 
         return $this->viewRenderer->render('update', ['form' => $form, 'role' => $role]);
     }

@@ -18,15 +18,14 @@ final class DeleteAction
         private ManagerInterface $manager,
         private UrlGeneratorInterface $urlGenerator,
         private ResponseFactoryInterface $responseFactory
-    ) {
-    }
+    ) {}
 
     public function __invoke(ServerRequestInterface $request, #[RouteArgument('name')] string $name): ResponseInterface
     {
-        $role = $this->manager->getRole($name);
-        if ($role !== null) {
-            $this->manager->remove($role);
+        if ( $this->manager->getRole($name) === null) {
+            return $this->responseFactory->createResponse(Status::NOT_FOUND);
         }
+        $this->manager->removeRole($name);
 
         return $this->responseFactory
             ->createResponse(Status::FOUND)

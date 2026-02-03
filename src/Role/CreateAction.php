@@ -6,7 +6,7 @@ namespace Layxis\Yii\Rbac\Web\Role;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Yiisoft\Form\FormHydrator;
+use Yiisoft\FormModel\FormHydrator;
 use Yiisoft\Http\Status;
 use Yiisoft\Rbac\ManagerInterface;
 use Yiisoft\Rbac\Role;
@@ -31,20 +31,17 @@ final class CreateAction
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $form = new RoleForm();
+        
+        if ($this->formHydrator->populateFromPostAndValidate($form, $request)) {
+            $role = (new Role($form->getName()))
+                ->withDescription($form->getDescription())
+                ->withRuleName($form->getRuleName());
 
-        if ($request->getMethod() === 'POST' && $this->formHydrator->populate($form, $request->getParsedBody())) {
-            $this->validator->validate($form);
-            if ($form->isValid()) {
-                $role = (new Role($form->getName()))
-                    ->withDescription($form->getDescription())
-                    ->withRuleName($form->getRuleName());
+            $this->manager->addRole($role);
 
-                $this->manager->add($role);
-
-                return $this->responseFactory
-                    ->createResponse(Status::FOUND)
-                    ->withHeader('Location', $this->urlGenerator->generate('role/index'));
-            }
+            return $this->responseFactory
+                ->createResponse(Status::FOUND)
+                ->withHeader('Location', $this->urlGenerator->generate('role/index'));
         }
 
         return $this->viewRenderer->render('create', ['form' => $form]);
