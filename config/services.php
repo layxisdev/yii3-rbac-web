@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Layxis\Yii\Rbac\Rule\RuleCollectionProvider;
-use Layxis\Yii\Rbac\Rule\RuleCollectionProviderInterface;
+use Layxis\Yii\Rbac\Web\Rule\RuleCollectionProviderInterface;
 use Yiisoft\Definitions\Reference;
 
 return [
