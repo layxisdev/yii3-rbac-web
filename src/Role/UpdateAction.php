@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Layxis\Yii\Rbac\Web\Role;
 
-use Layxis\Yii\Rbac\Rule\RuleCollectionProviderInterface;
+use Layxis\Yii\Rbac\Web\Rule\RuleCollectionProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\Http\Status;

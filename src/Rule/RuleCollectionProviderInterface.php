@@ -1,6 +1,6 @@
 <?php
 
-namespace Layxis\Yii\Rbac\Rule;
+namespace Layxis\Yii\Rbac\Web\Rule;
 
 interface RuleCollectionProviderInterface
 {

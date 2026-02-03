@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Layxis\Yii\Rbac\Rule;
+namespace Layxis\Yii\Rbac\Web\Rule;
 
 final class RuleCollectionProvider implements RuleCollectionProviderInterface
 {
