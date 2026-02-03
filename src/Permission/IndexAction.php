@@ -7,7 +7,6 @@ namespace Layxis\Yii\Rbac\Web\Permission;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\Rbac\ItemsStorageInterface;
-use Yiisoft\Router\HydratorAttribute\RouteArgument;
 use Yiisoft\Yii\View\Renderer\ViewRenderer;
 
 final class IndexAction

@@ -6,6 +6,7 @@ namespace Layxis\Yii\Rbac\Web\Item;
 
 use Yiisoft\FormModel\FormModel;
 use Yiisoft\Rbac\Item;
+use Yiisoft\Translator\TranslatorInterface;
 use Yiisoft\Validator\Rule\In;
 use Yiisoft\Validator\Rule\Length;
 use Yiisoft\Validator\Rule\Regex;

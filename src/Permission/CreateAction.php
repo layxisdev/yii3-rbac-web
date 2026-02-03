@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Layxis\Yii\Rbac\Web\Permission;
 
+use Layxis\Yii\Rbac\Rule\RuleCollectionProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\Http\Status;
@@ -23,6 +24,7 @@ final class CreateAction
         private UrlGeneratorInterface $urlGenerator,
         private FormHydrator $formHydrator,
         private ResponseFactoryInterface $responseFactory,
+        private ?RuleCollectionProviderInterface $ruleCollectionProvider
     ) {
         $this->viewRenderer = $viewRenderer->withControllerName('permission');
     }
@@ -30,7 +32,7 @@ final class CreateAction
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $form = new PermissionForm();
-        
+
         if ($this->formHydrator->populateFromPostAndValidate($form, $request)) {
             $permission = (new Permission($form->getName()))
                 ->withDescription($form->getDescription())
@@ -43,6 +45,6 @@ final class CreateAction
                 ->withHeader('Location', $this->urlGenerator->generate('permission/index'));
         }
 
-        return $this->viewRenderer->render('create', ['form' => $form]);
+        return $this->viewRenderer->render('create', ['form' => $form, 'ruleCollectionProvider' => $this->ruleCollectionProvider]);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Layxis\Yii\Rbac\Web\Role;
 
+use Layxis\Yii\Rbac\Rule\RuleCollectionProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\Http\Status;
@@ -13,7 +14,6 @@ use Yiisoft\Yii\View\Renderer\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\FormModel\FormHydrator;
 use Yiisoft\Router\HydratorAttribute\RouteArgument;
-use Yiisoft\Validator\ValidatorInterface;
 
 final class UpdateAction
 {
@@ -23,7 +23,7 @@ final class UpdateAction
         private UrlGeneratorInterface $urlGenerator,
         private FormHydrator $formHydrator,
         private ResponseFactoryInterface $responseFactory,
-        private ValidatorInterface $validator
+        private ?RuleCollectionProviderInterface $ruleCollectionProvider
     ) {
         $this->viewRenderer = $viewRenderer->withControllerName('role');
     }
@@ -36,7 +36,7 @@ final class UpdateAction
         }
 
         $form = new RoleForm();
-        
+
         if ($this->formHydrator->populateFromPostAndValidate($form, $request)) {
                 $newRole = $role
                     ->withName($form->getName())
@@ -54,6 +54,6 @@ final class UpdateAction
         $form->setDescription($role->getDescription());
         $form->setRuleName($role->getRuleName());
 
-        return $this->viewRenderer->render('update', ['form' => $form, 'role' => $role]);
+        return $this->viewRenderer->render('update', ['form' => $form, 'ruleCollectionProvider' => $this->ruleCollectionProvider]);
     }
 }

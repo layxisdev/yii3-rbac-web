@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Layxis\Yii\Rbac\Web\Permission;
 
+use Layxis\Yii\Rbac\Rule\RuleCollectionProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\Http\Status;
@@ -23,6 +24,7 @@ final class UpdateAction
         private UrlGeneratorInterface $urlGenerator,
         private FormHydrator $formHydrator,
         private ResponseFactoryInterface $responseFactory,
+        private ?RuleCollectionProviderInterface $ruleCollectionProvider
     ) {
         $this->viewRenderer = $viewRenderer->withControllerName('permission');
     }
@@ -49,6 +51,6 @@ final class UpdateAction
         $form->setDescription($permission->getDescription());
         $form->setRuleName($permission->getRuleName());
 
-        return $this->viewRenderer->render('update', ['form' => $form]);
+        return $this->viewRenderer->render('update', ['form' => $form, 'ruleCollectionProvider' => $this->ruleCollectionProvider]);
     }
 }

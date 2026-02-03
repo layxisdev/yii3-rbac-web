@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Layxis\Yii\Rbac\Web\Role;
 
+use Layxis\Yii\Rbac\Rule\RuleCollectionProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\FormModel\FormHydrator;
@@ -13,7 +14,6 @@ use Yiisoft\Rbac\Role;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Yii\View\Renderer\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Yiisoft\Validator\ValidatorInterface;
 
 final class CreateAction
 {
@@ -23,7 +23,7 @@ final class CreateAction
         private UrlGeneratorInterface $urlGenerator,
         private FormHydrator $formHydrator,
         private ResponseFactoryInterface $responseFactory,
-        private ValidatorInterface $validator
+        private ?RuleCollectionProviderInterface $ruleCollectionProvider
     ) {
         $this->viewRenderer = $viewRenderer->withControllerName('role');
     }
@@ -31,7 +31,7 @@ final class CreateAction
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $form = new RoleForm();
-        
+    
         if ($this->formHydrator->populateFromPostAndValidate($form, $request)) {
             $role = (new Role($form->getName()))
                 ->withDescription($form->getDescription())
@@ -44,6 +44,6 @@ final class CreateAction
                 ->withHeader('Location', $this->urlGenerator->generate('role/index'));
         }
 
-        return $this->viewRenderer->render('create', ['form' => $form]);
+        return $this->viewRenderer->render('create', ['form' => $form, 'ruleCollectionProvider' => $this->ruleCollectionProvider]);
     }
 }

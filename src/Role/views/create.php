@@ -27,7 +27,7 @@ $htmlForm = Html::form()
 
 <?= Field::text($form, 'name') ?>
 <?= Field::textarea($form, 'description') ?>
-<?= Field::select($form, 'ruleName') ?>
+<?= empty($ruleCollectionProvider) ? Field::text($form, 'ruleName') : Field::select($form, 'ruleName', $ruleCollectionProvider->getRules()) ?>
 
 <?= Html::submitButton('Create', ['class' => 'btn btn-primary']) ?>
 
